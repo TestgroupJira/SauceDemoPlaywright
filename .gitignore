@@ -1,0 +1,16 @@
+bin/
+obj/
+
+playwright-report/
+allure-report/
+allure-results/
+
+TestResults/
+
+node_modules/
+
+*.user
+*.suo
+.vs/
+
+*.trx

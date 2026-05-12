@@ -1,0 +1,10 @@
+{
+  "Playwright": {
+    "Urls": {
+        "UrlBase": "https://www.saucedemo.com",
+        "UrlProductos": "https://www.saucedemo.com/inventory.html"
+    },
+    "Timeout": 15000,
+    "Browser": "Chromium"
+  }
+}
