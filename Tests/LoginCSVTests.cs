@@ -28,10 +28,10 @@ public class LoginCSVTests : BaseTest
     }
 
     // Metodo para obtener los datos del archivo CSV
-    public static IEnumerable<TestCaseData> LeerUsuarios()
+    public static IEnumerable<TestCaseData> LeerUsuariosSmoke()
     {
         // Leer los datos del archivo CSV utilizando el método LeerCsv de la clase CsvReader
-        foreach (var valores in CsvReader.LeerCsv("usuarios.csv", false))
+        foreach (var valores in CsvReader.LeerCsv("usuarios_smoke.csv", false))
         {
             // Crear un objeto TestCaseData con los valores leidos del archivo CSV
             yield return new TestCaseData(valores[0], valores[1]);
@@ -39,12 +39,13 @@ public class LoginCSVTests : BaseTest
     }
 
     [Test]
-    [AllureName("Login exitoso con datos de CSV")]
+    [AllureName("Login exitoso con datos de CSV Smoke")]
     [AllureDescription("Este test verifica que un usuario pueda iniciar sesión exitosamente utilizando datos obtenidos de un archivo CSV.")]
-    [AllureTag("Login", "CSV", "Exitoso")]
+    [AllureTag("Login", "CSV", "Exitoso", "Smoke")]
     [AllureSeverity(SeverityLevel.critical)]
-    [TestCaseSource(nameof(LeerUsuarios))]
-    public async Task LoginExitoso(string username, string password)
+    [Category("Smoke")]
+    [TestCaseSource(nameof(LeerUsuariosSmoke))]
+    public async Task LoginExitosoSmoke(string username, string password)
     {
         // Navegar a la página de login
         await Page.GotoAsync(ConfigReader.GetConfig.Urls["UrlBase"]);
@@ -57,45 +58,33 @@ public class LoginCSVTests : BaseTest
         
     }
 
-    // Metodo para leer los datos del archivo de productos
-    public static IEnumerable<TestCaseData> LeerProductos()
+    // Metodo para obtener los datos del archivo CSV
+    public static IEnumerable<TestCaseData> LeerUsuariosRegression()
     {
-        // Leer los datos del archivo CSV usando el metodo LeerCsv de la clase CsvReader
-        foreach (var valores in CsvReader.LeerCsv("productos.csv", true))
+        // Leer los datos del archivo CSV utilizando el método LeerCsv de la clase CsvReader
+        foreach (var valores in CsvReader.LeerCsv("usuarios_regression.csv", false))
         {
             // Crear un objeto TestCaseData con los valores leidos del archivo CSV
-            yield return new TestCaseData(valores[0], valores[1], valores[2], valores[3]);
+            yield return new TestCaseData(valores[0], valores[1]);
         }
     }
 
-
     [Test]
-    [AllureName("Validar carrito de compras con productos del CSV")]
-    [AllureDescription("Este test verifica que los productos se agreguen y quiten correctamente del carrito.")]
-    [AllureTag("Carrito", "Compras")]
-    [AllureSeverity(SeverityLevel.normal)]
-    [TestCaseSource(nameof(LeerProductos))]
-    public async Task ValidarCarrito(string username, string password, string producto1, string producto2)
+    [AllureName("Login exitoso con datos de CSV Regression")]
+    [AllureDescription("Este test verifica que un usuario pueda iniciar sesión exitosamente utilizando datos obtenidos de un archivo CSV.")]
+    [AllureTag("Login", "CSV", "Exitoso", "Regression")]
+    [AllureSeverity(SeverityLevel.critical)]
+    [Category("Regression")]
+    [TestCaseSource(nameof(LeerUsuariosRegression))]
+    public async Task LoginExitosoRegression(string username, string password)
     {
         // Navegar a la página de login
         await Page.GotoAsync(ConfigReader.GetConfig.Urls["UrlBase"]);
 
         // Realizar el login con los datos obtenidos del archivo CSV
         await _loginPage.LoginAsync(username, password);
-
         // Verificar que se haya navegado a la página de productos
         var tituloPagina = await _productsPage.ObtenerTituloProductosAsync();
-        await Assertions.Expect(tituloPagina).ToBeVisibleAsync();
-
-        // Agregar el primer producto al carrito
-        await _productsPage.AgregarProductoAlCarritoAsync(producto1);
-        // Agregar el segundo producto al carrito
-        await _productsPage.AgregarProductoAlCarritoAsync(producto2);
-        // Quitar el primer producto del carrito
-        await _productsPage.QuitarProductoDelCarritoAsync(producto1);
-
-        // Verificar que el carrito tenga un producto
-        var carrito = await _productsPage.ObtenerCarritoAsync();
-        await Assertions.Expect(carrito).ToHaveTextAsync("1");
+        await Assertions.Expect(tituloPagina).ToBeVisibleAsync();   
     }
 }

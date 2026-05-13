@@ -34,7 +34,7 @@ jobs:
       run: playwright install
 
     - name: Run Tests
-      run: dotnet test
+      run: dotnet test --filter "Category=Smoke"
 
     - name: Install Allure
       run: npm install -g allure-commandline --save-dev

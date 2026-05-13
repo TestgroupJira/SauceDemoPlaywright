@@ -39,8 +39,6 @@
     <Folder Include="Base\" />
     <Folder Include="Fixtures\" />
     <Folder Include="Config\" />
-    <Folder Include="TestData\" />
-    <Folder Include="TestData\Data\" />
   </ItemGroup>
 
   <ItemGroup>
