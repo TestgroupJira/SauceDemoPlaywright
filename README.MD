@@ -6,5 +6,15 @@
     4. Marcar opciones:
         - repo
         - workflow
-    5. Copiar y guardar el token.
+    5. Copiar y guardar el token puesto que github no vuelve a mostrarlo.
 3. Crear archivo .github/workflows/playwright.yml
+4. Este archivo cada vez que se realice la accion push en git, accionara github actions para la ejecucion de las pruebas en un entorno virtual de windows y la conexion a jira via API.
+5. Ingresar a Jira y crear un panel tipo kanban:
+    1. En el tablero, hacer click en el boton de automatizacion en la parte superior derecha del tablero.
+    2. Haz click en "Crear Automatizacion"
+    3. En los desencadenadores, selecciona "Transicion de actividad realizada"
+    4. Configura un estado de origen y un estado de destino.
+    5. Agrega condicion: Condicion de los campos de actividad:
+        - Campo: Etiquetas
+        - Condicion: No esta vacia
+    6. Agrega una accion que envie una peticion web
