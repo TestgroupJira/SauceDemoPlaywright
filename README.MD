@@ -25,3 +25,4 @@
             - Authorization / Bearer TU_TOKEN
             - Accept / application/vnd.github+json
             - Content-Type / application/json
+    7. Guardar las issue key de jira
