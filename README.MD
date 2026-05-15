@@ -2,7 +2,7 @@
 2. Crear token:
     1. Ir a la pagina de github: https://github.com/settings/tokens
     2. Generate new token -> Generate new token (classic)
-    3. Note = NombreToken
+    3. Note = NombreDelToken
     4. Marcar opciones:
         - repo
         - workflow
@@ -17,4 +17,11 @@
     5. Agrega condicion: Condicion de los campos de actividad:
         - Campo: Etiquetas
         - Condicion: No esta vacia
-    6. Agrega una accion que envie una peticion web
+    6. Agrega una accion que:
+        - Envie una peticion web (POST) con la URL: https://api.github.com/repos/TU_USUARIO/TU_REPO/dispatches
+        - Cuerpo de la solicitud web:
+            - Datos personalizados
+        - Encabezados Llave / Valor:
+            - Authorization / Bearer TU_TOKEN
+            - Accept / application/vnd.github+json
+            - Content-Type / application/json

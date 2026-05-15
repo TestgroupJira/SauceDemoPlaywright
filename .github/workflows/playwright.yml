@@ -37,7 +37,7 @@ jobs:
       run: playwright install
 
     - name: Run Tests
-      run: dotnet test --filter "Category=Smoke"
+      run: dotnet test --filter "Category=${{ github.event.client_payload.suite }}"
 
     - name: Install Allure
       run: npm install -g allure-commandline --save-dev
