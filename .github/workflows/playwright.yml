@@ -37,7 +37,17 @@ jobs:
       run: playwright install
 
     - name: Run Tests
-      run: dotnet test --filter "Category=${{ github.event.client_payload.suite }}"
+      shell: pwsh
+      run: |
+        $suite = "${{ github.event.client_payload.suite }}"
+
+        if ([string]::IsNullOrWhiteSpace($suite)) {
+          $suite = "Smoke"
+        }
+
+        Write-Host "Running suite: $suite"
+
+        dotnet test --filter "Category=$suite"
 
     - name: Install Allure
       run: npm install -g allure-commandline --save-dev
