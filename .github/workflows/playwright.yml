@@ -37,7 +37,9 @@ jobs:
       run: playwright install
 
     - name: Run Tests
+      id: runtests
       shell: pwsh
+      continue-on-error: true
       run: |
         $suite = "${{ github.event.client_payload.suite }}"
 
@@ -48,6 +50,53 @@ jobs:
         Write-Host "Running suite: $suite"
 
         dotnet test --filter "Category=$suite"
+
+        if ($LASTEXITCODE -eq 0) {
+          echo "test_result=success" >> $env:GITHUB_OUTPUT
+        }
+        else {
+          echo "test_result=failure" >> $env:GITHUB_OUTPUT
+        }
+
+    - name: Move Jira Ticket to DONE
+      if: steps.runtests.outputs.test_result == 'success'
+      shell: pwsh
+      run: |
+        $body = @{
+          transition = @{
+            id = "31"
+          }
+        } | ConvertTo-Json
+
+        Invoke-RestMethod `
+          -Uri "${{ secrets.JIRA_BASE_URL }}/rest/api/3/issue/${{ github.event.client_payload.issueKey }}/transitions" `
+          -Method Post `
+          -Headers @{
+            Authorization = "Basic " + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${{ secrets.JIRA_EMAIL }}:${{ secrets.JIRA_API_TOKEN }}"))
+            Accept = "application/json"
+          } `
+          -ContentType "application/json" `
+          -Body $body
+
+    - name: Move Jira Ticket to FALLIDO
+      if: steps.runtests.outputs.test_result == 'failure'
+      shell: pwsh
+      run: |
+        $body = @{
+          transition = @{
+            id = "2"
+          }
+        } | ConvertTo-Json
+
+        Invoke-RestMethod `
+          -Uri "${{ secrets.JIRA_BASE_URL }}/rest/api/3/issue/${{ github.event.client_payload.issueKey }}/transitions" `
+          -Method Post `
+          -Headers @{
+            Authorization = "Basic " + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${{ secrets.JIRA_EMAIL }}:${{ secrets.JIRA_API_TOKEN }}"))
+            Accept = "application/json"
+          } `
+          -ContentType "application/json" `
+          -Body $body
 
     - name: Install Allure
       run: npm install -g allure-commandline --save-dev

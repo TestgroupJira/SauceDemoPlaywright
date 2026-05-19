@@ -25,4 +25,14 @@
             - Authorization / Bearer TU_TOKEN
             - Accept / application/vnd.github+json
             - Content-Type / application/json
-    7. Guardar las issue key de jira
+    7. Crear API Token Jira en https://id.atlassian.com/manage-profile/security/api-tokens 
+        - Pulsa Crear token de API
+        - Nombra el token
+        - Guarda el token debido a que no se volvera a mostrar
+    8. Guardar las issue key de jira buscando en este link: https://TUORG.atlassian.net/rest/api/3/issue/SDP-1/transitions (Recuerda cambiar SDP por la sigla de los id de etiqueta):
+        - Columna HECHO: 31
+        - Columna FALLIDO: 2
+    9. Guardar los secrets en Github -> Repository -> Settings -> Secrets and variables -> Actions -> New repository secrets:
+        - Name: JIRA_API_TOKEN / Secret: token generado Jira
+        - Name: JIRA_EMAIL / Secret: tuemail@empresa.com
+        - Name: JIRA_BASE_URL / Secret: https://tuempresa.atlassian.net
