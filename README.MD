@@ -25,14 +25,35 @@
             - Authorization / Bearer TU_TOKEN
             - Accept / application/vnd.github+json
             - Content-Type / application/json
-    7. Crear API Token Jira en https://id.atlassian.com/manage-profile/security/api-tokens 
-        - Pulsa Crear token de API
-        - Nombra el token
-        - Guarda el token debido a que no se volvera a mostrar
-    8. Guardar las issue key de jira buscando en este link: https://TUORG.atlassian.net/rest/api/3/issue/SDP-1/transitions (Recuerda cambiar SDP por la sigla de los id de etiqueta):
-        - Columna HECHO: 31
-        - Columna FALLIDO: 2
-    9. Guardar los secrets en Github -> Repository -> Settings -> Secrets and variables -> Actions -> New repository secrets:
-        - Name: JIRA_API_TOKEN / Secret: token generado Jira
-        - Name: JIRA_EMAIL / Secret: tuemail@empresa.com
-        - Name: JIRA_BASE_URL / Secret: https://tuempresa.atlassian.net
+6. Crear API Token Jira en https://id.atlassian.com/manage-profile/security/api-tokens 
+    - Pulsa Crear token de API
+    - Nombra el token
+    - Guarda el token debido a que no se volvera a mostrar
+7. Guardar las issue key de jira buscando en este link: https://TUORG.atlassian.net/rest/api/3/issue/SDP-1/transitions (Recuerda cambiar SDP por la sigla de los id de etiqueta):
+    - Columna HECHO: 31
+    - Columna FALLIDO: 2
+8. Guardar los secrets en Github -> Repository -> Settings -> Secrets and variables -> Actions -> New repository secrets:
+    - Name: JIRA_API_TOKEN / Secret: token generado Jira
+    - Name: JIRA_EMAIL / Secret: tuemail@empresa.com
+    - Name: JIRA_BASE_URL / Secret: https://tuempresa.atlassian.net
+9. Crear reportes online en pagina https://TUUSUARIO.github.io/TUREPO/
+    1. Crear rama gh-pages en git bash:
+        - git checkout --orphan gh-pages
+        - git reset --hard
+        - echo "# Allure Reports" > README.md
+            git add README.md
+            git commit -m "Initial gh-pages commit"
+        - git push origin gh-pages
+        - git checkout main
+    2. Activar GitHub Pages en Repository -> Settings -> Pages:
+        - Source: Deploy from a branch
+        - Branch: gh-pages
+        - Folder: / (root)
+    3. Agregar deploy al workflow
+    4. Dar permisos al workflow en Repository -> Settings -> Actions -> General:
+        - Busca Workflow permissions
+        - Selecciona Read and write permissions
+    5. Hacer push:
+        - git add .
+            git commit -m "Add Allure GitHub Pages deployment"
+            git push origin main
