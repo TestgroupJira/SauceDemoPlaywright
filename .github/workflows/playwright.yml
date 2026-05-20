@@ -98,6 +98,99 @@ jobs:
           -ContentType "application/json" `
           -Body $body
 
+        - name: Add Comment to Jira Ticket
+              if: always()
+              shell: pwsh
+              run: |
+
+                $testResult = "${{ steps.runtests.outputs.test_result }}"
+                $suite = "${{ github.event.client_payload.suite }}"
+                $issueKey = "${{ github.event.client_payload.issueKey }}"
+
+                $allureUrl = "https://testgroupjira.github.io/SauceDemoPlaywright/"
+                $workflowUrl = "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+                $comment = @"
+                {
+                  "body": {
+                    "type": "doc",
+                    "version": 1,
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Resultado ejecución Playwright: $testResult"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Suite ejecutada: $suite"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Allure Report: "
+                          },
+                          {
+                            "type": "text",
+                            "text": "$allureUrl",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "$allureUrl"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "GitHub Workflow: "
+                          },
+                          {
+                            "type": "text",
+                            "text": "$workflowUrl",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "$workflowUrl"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+        "@
+
+        Invoke-RestMethod `
+          -Uri "${{ secrets.JIRA_BASE_URL }}/rest/api/3/issue/$issueKey/comment" `
+          -Method Post `
+          -Headers @{
+            Authorization = "Basic " + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${{ secrets.JIRA_EMAIL }}:${{ secrets.JIRA_API_TOKEN }}"))
+            Accept = "application/json"
+          } `
+          -ContentType "application/json" `
+          -Body $comment
+
     - name: Install Allure
       run: npm install -g allure-commandline --save-dev
 
